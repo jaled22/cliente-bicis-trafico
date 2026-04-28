@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanMove - Bicicletas</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Barra superior -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+    <a class="navbar-brand fw-bold" href="#">TITULO APP</a>
+
+    <div class="ms-auto">
+      <button class="btn btn-outline-light btn-sm me-2" type="button">Bicicletas</button>
+      <button class="btn btn-outline-light btn-sm" type="button">Tráfico</button>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      
+      <!-- Menú lateral -->
+      <aside class="col-md-3 col-lg-2 bg-light border-end p-3" id="side-menu">
+        <h5>Bicicletas</h5>
+
+        <label for="citySelect" class="form-label mt-3">Selecciona una ciudad</label>
+        <select id="citySelect" class="form-select">
+          <option value="">Elige una ciudad</option>
+          <option value="Madrid">Madrid</option>
+          <option value="Valencia">Valencia</option>
+          <option value="Sevilla">Sevilla</option>
+        </select>
+      </aside>
+
+      <!-- Zona central -->
+      <main class="col-md-9 col-lg-10 p-4">
+        <h2 class="mb-3">Servicio de alquiler de bicicletas</h2>
+        <p class="text-muted">Fase I: datos estáticos</p>
+
+        <div id="bike-map"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="bikeModal" tabindex="-1" aria-labelledby="bikeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bikeModalLabel">Información del punto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body" id="bikeModalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/bicis.js"></script>
+  
+</body>
+</html>
