@@ -21,29 +21,31 @@
     </div>
   </nav>
 
-  <div class="container-fluid">
-    <div class="row">
+  <div id="bike-view" class="app-view d-none">
+    <div class="container-fluid">
+      <div class="row">
       
-      <!-- Menú lateral -->
-      <aside class="col-md-3 col-lg-2 bg-light border-end p-3" id="side-menu">
-        <h5>Bicicletas</h5>
+        <!-- Menú lateral -->
+        <aside class="col-md-3 col-lg-2 bg-light border-end p-3" id="side-menu">
+          <h5>Bicicletas</h5>
 
-        <label for="citySelect" class="form-label mt-3">Selecciona una ciudad</label>
-        <select id="citySelect" class="form-select">
-          <option value="">Elige una ciudad</option>
-          <option value="Madrid">Madrid</option>
-          <option value="Valencia">Valencia</option>
-          <option value="Sevilla">Sevilla</option>
-        </select>
-      </aside>
+          <label for="citySelect" class="form-label mt-3">Selecciona una ciudad</label>
+          <select id="citySelect" class="form-select">
+            <option value="">Elige una ciudad</option>
+            <option value="Madrid">Madrid</option>
+            <option value="Valencia">Valencia</option>
+            <option value="Sevilla">Sevilla</option>
+          </select>
+        </aside>
 
-      <!-- Zona central -->
-      <main class="col-md-9 col-lg-10 p-4">
-        <h2 class="mb-3">Servicio de alquiler de bicicletas</h2>
-        <p class="text-muted">Fase I: datos estáticos</p>
+        <!-- Zona central -->
+        <main class="col-md-9 col-lg-10 p-4">
+          <h2 class="mb-3">Servicio de alquiler de bicicletas</h2>
+          <p class="text-muted">Fase I: datos estáticos</p>
 
-        <div id="bike-map"></div>
-      </main>
+          <div id="bike-map"></div>
+        </main>
+      </div>
     </div>
   </div>
 
