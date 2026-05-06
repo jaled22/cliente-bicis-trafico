@@ -16,8 +16,8 @@
             </a> 
 
             <div class="navbar-nav ms-auto flex-row gap-3">
-                <button class="nav-link btn btn-link" id="nav-bicis">Alquiler de Bicis</button>
-                <button class="nav-link btn btn-link" id="nav-trafico">Tráfico</button>
+                <button class="btn btn-outline-light btn-sm me-2" type="button" id="nav-bicis">Alquiler de Bicicletas</button>
+                <button class="btn btn-outline-light btn-sm" type="button" id="nav-trafico">Tráfico</button>
             </div>
         </div>
      </nav>
@@ -31,7 +31,37 @@
 
             <main class="col p-4">
                 <div id="main-content">
+                <!-- VISTA INICIAL: Tu parte (Descripción y Manual) -->
+                <div id="inicio-view" class="app-view">
+                    <div class="p-5 mb-4 bg-light rounded-3">
+                        <div class="container-fluid py-5">
+                            <h1 class="display-5 fw-bold">EcoCity: Movilidad Inteligente</h1>
+                            <p class="col-md-8 fs-4">Expertos en soluciones tecnológicas para ciudades sostenibles. Nuestra misión es facilitar el transporte urbano mediante el análisis de datos en tiempo real.</p>
+                        </div>
                     </div>
+                    <h3>Manual de Usuario</h3>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Logo:</strong> Pulsa sobre el logo para volver a esta pantalla informativa en cualquier momento.</li>
+                        <li class="list-group-item"><strong>Alquiler de Bicis:</strong> Visualiza puntos de recogida y disponibilidad en el mapa.</li>
+                        <li class="list-group-item"><strong>Tráfico:</strong> Consulta el estado de las vías y zonas de Madrid en una tabla.</li>
+                    </ul>
+                </div>
+
+                <!-- VISTA DE BICIS: El ID #bike-view que Beatriz  -->
+                <div id="bike-view" class="app-view d-none">
+                    <h2>Mapa de Estaciones de Bicicletas</h2>
+                    <!-- Realizar mapa -->
+                    <div id="mapa" style="height: 600px; width: 100%;" class="border rounded shadow-sm"></div>
+                </div>
+
+                <!-- VISTA DE TRÁFICO: Jaleed -->
+                <div id="traffic-view" class="app-view d-none">
+                    <h2>Estado del Tráfico en Tiempo Real</h2>
+                    <div id="tabla-container">
+                        <!-- Tabla aquí -->
+                    </div>
+                </div>
+            </div>
             </main>
         </div>
     </div>
