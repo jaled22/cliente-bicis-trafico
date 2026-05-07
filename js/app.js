@@ -17,6 +17,7 @@ $(document).ready(function() {
     $("#nav-bicis").on("click", function() {
         hideAllViews(); // Quita el manual de la pantalla
         $("#sidebar").removeClass("d-none"); 
+        $("#bike-view").removeClass("d-none");
 
         // meter lo de bea
         $("#sidebar-content").html(`
@@ -29,6 +30,19 @@ $(document).ready(function() {
                 <option value="Sevilla">Sevilla</option>
             </select>
         `);
+
+        $("#citySelect").on("change", function() {
+            const city = $(this).val();
+            if (city && typeof loadBikeCity === "function") {
+                loadBikeCity(city);
+            }
+         });
+
+         if (bikeMap) {
+            setTimeout(function() {
+                bikeMap.invalidateSize();
+            }, 200); // Le damos un margen de 200ms para que Bootstrap termine de mostrar el div
+        }
 
         // Llamar a la función de bea
         if (typeof showBikeView === "function") {

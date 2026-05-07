@@ -11,6 +11,8 @@ import logging as lg
 import datetime
 import socket
 
+import os
+
 import mimetypes
 
 piePagina = conf.ASIGNATURA + "Universidad Polit&eacute;cnica de Madrid ("+datetime.datetime.now().strftime("%c")+" en "+socket.gethostname()+")"
@@ -23,43 +25,48 @@ class MyServer(BaseHTTPRequestHandler):
         try:
             parsed_path = urllib.parse.urlparse(self.path)
 
-            sendReply = True
             petición = self.path[1:]
             if (petición == ""):
-
                 petición="index.html"
-
-            elif (petición == "favicon.ico"):
-                pass
 
             mimetype, codificacion = mimetypes.guess_type(petición)
             if mimetype is None:
-                mimetype = 'application/octet-stream'
+                if petición.endswith('.geojson'):
+                    mimetype = 'application/geo+json'
+                else:
+                    mimetype = 'application/octet-stream'
 
+            lg.debug("\tTipo MIME: "+mimetype+" para el archivo: "+self.path)
+            if not os.path.isfile(petición):
+                lg.warning(f"Se solicita una página o fichero '{self.path}' inexistente.")
+                self.send_error(404, f"Recurso no encontrado: '{parsed_path.path}'")
+                return
 
-            if sendReply:
-                templateFile=open(petición,'rb')
-                string=templateFile.read()
-                self.send_headers(200, mimetype)
-                self.wfile.write(string)
+            tamano_archivo = os.path.getsize(petición)
+            lg.debug("\tSe va a acceder al archivo: "+petición+" ...")
+            templateFile=open(petición,'rb')
+            string=templateFile.read()
+            lg.debug("\tArchivo leído correctamente ("+str(len(string))+" bytes), se va a enviar al cliente...")
+            self.send_headers(200, mimetype, tamano_archivo)
+            lg.debug(f"\tEnviando {petición} ({tamano_archivo} bytes) por bloques...")
+            with open(petición, 'rb') as f:
+                while True:
+                    bloque = f.read(1024 * 16) # Bloques de 16KB
+                    if not bloque:
+                        break
+                    self.wfile.write(bloque)
+            lg.debug("\tArchivo enviado correctamente al cliente.")
 
-        except ( FileNotFoundError):
-            lg.warning(f"Se solicita una página o fichero '{self.path}' inexistente.")
-            self.send_error(404, f"Recurso no encontrado: '{parsed_path.path}'")
         except (IOError):
             lg.warning(f"Se ha producido un error indefinido")
             self.send_error(500, f"Error interno del servidor '{parsed_path.path}'")
 
-    def send_headers(self, status, content_type):
-        #    """Send out the group of headers for a successful request"""
-        # Send HTTP headers
-
+    def send_headers(self, status, content_type, content_length):
         self.send_response(status, "OK")
         self.send_header('Content-type', content_type)
-        self.send_header('Transfer-Encoding', 'chunked')
+        self.send_header('Content-Length', content_length)
         self.send_header('Connection', 'close')
         self.end_headers()
-
 
 if __name__ == "__main__":
 
