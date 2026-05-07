@@ -1,0 +1,24 @@
+
+#sidebar {
+    min-height: calc(100vh - 56px); /* Altura total menos la navbar */
+    background-color: #f8f9fa;
+}
+
+/* Mapa */
+#mapa {
+    height: 600px;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Manual del usuario */
+#inicio-view {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Para el contenido central */
+main {
+    background-color: #ffffff;
+}
