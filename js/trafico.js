@@ -1,32 +1,4 @@
 
-
-const ZONAS_TRAFICO = [
-    { id: "centro", nombre: "Centro" },
-    { id: "retiro", nombre: "Retiro" },
-    { id: "salamanca", nombre: "Salamanca" },
-    // fácilmente modificable añadiendo aquí
-];
-
-const DATOS_TRAFICO = {
-    "centro": [
-        { punto: "Gran Vía", intensidad: 1200, velocidad: 15, ocupacion: 85 },
-        { punto: "Alcalá", intensidad: 980, velocidad: 22, ocupacion: 70 },
-        { punto: "Sol", intensidad: 1500, velocidad: 10, ocupacion: 95 },
-        { punto: "Mayor", intensidad: 750, velocidad: 30, ocupacion: 55 },
-        { punto: "Arenal", intensidad: 430, velocidad: 40, ocupacion: 30 },
-        { punto: "Preciados", intensidad: 1100, velocidad: 18, ocupacion: 80 },
-        { punto: "Fuencarral", intensidad: 860, velocidad: 25, ocupacion: 65 },
-        { punto: "Montera", intensidad: 920, velocidad: 20, ocupacion: 72 },
-        { punto: "Hortaleza", intensidad: 670, velocidad: 35, ocupacion: 48 },
-        { punto: "Carretas", intensidad: 540, velocidad: 38, ocupacion: 40 },
-        { punto: "Atocha", intensidad: 1300, velocidad: 12, ocupacion: 90 },
-        { punto: "Paseo del Prado", intensidad: 1050, velocidad: 20, ocupacion: 75 },
-    ],
-    "retiro": [
-        // TODO rellenar
-    ]
-};
-
 let paginaActual = 1;
 const FILAS_POR_PAGINA = 10;
 
