@@ -52,23 +52,9 @@ $(document).ready(function() {
         }
     });
 
-    // Tráfico (Jaled)
     $("#nav-trafico").on("click", function() {
-        hideAllViews();
-        $("#sidebar").removeClass("d-none");
-
-        // Meter lo de Jaled aqui 
-        $("#sidebar-content").html(`
-            <h5>Tráfico</h5>
-            <label class="form-label mt-3">Selecciona una zona</label>
-            <select id="trafficZoneSelect" class="form-select">
-                <option value="centro">Madrid Centro</option>
-                <option value="m30">M-30</option>
-            </select>
-            <button class="btn btn-success mt-3 w-100">Ver tráfico</button>
-        `);
-
-        $("#traffic-view").removeClass("d-none");
-    });
+    hideAllViews();
+    mostrarSidebarTrafico();
+});
 
 });
