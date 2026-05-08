@@ -1,0 +1,10 @@
+<template id="trafico-template" type="text/x-handlebars-template">
+    {{#each filas}}
+    <tr>
+        <td class="fw-bold">{{punto}}</td>
+        <td>{{intensidad}}</td>
+        <td>{{velocidad}} km/h</td>
+        <td>{{ocupacion}}%</td>
+    </tr>
+    {{/each}}
+</template>

@@ -1,56 +1,75 @@
+const urlPlantilla = 'template/trafico.html';
+const urlDatos     = 'json/trafico.json';
 
+const ZONAS_TRAFICO = [
+    { id: "centro",    nombre: "Centro" },
+    { id: "retiro",    nombre: "Retiro" },
+    { id: "salamanca", nombre: "Salamanca" },
+];
+
+let plantillaTrafico;
+let todosLosDatos;
 let paginaActual = 1;
 const FILAS_POR_PAGINA = 10;
 
-function mostrarSidebarTrafico() {
-    // 1. Mostrar sidebar
-    $('#sidebar').removeClass('d-none');
+$(document).ready(function() {
 
-    // 2. Inyectar formulario en sidebar-content
+    // 1. Cargar plantilla
+    $.get(urlPlantilla)
+        .done(function(data) {
+            plantillaTrafico = Handlebars.compile($(data).html());
+
+            // 2. Cargar datos JSON
+            $.getJSON(urlDatos)
+                .done(function(data) {
+                    todosLosDatos = data;
+                })
+                .fail(function() {
+                    console.error('Error al cargar datos trafico.json');
+                });
+        })
+        .fail(function() {
+            console.error('Error al cargar template/trafico.html');
+        });
+
+});
+
+function mostrarSidebarTrafico() {
+    $('#sidebar').removeClass('d-none');
+    $('.app-view').addClass('d-none');
+    $('#traffic-view').removeClass('d-none');
+
+    // Sidebar con el select de zonas
     $('#sidebar-content').html(`
-        <h5>Tráfico Madrid</h5>
-        <select id="select-zona" class="form-select mt-2">
+        <h5 class="mb-3">Tráfico Madrid</h5>
+        <label class="form-label">Selecciona una zona</label>
+        <select id="select-zona" class="form-select">
             <option value="">-- Elige zona --</option>
             ${ZONAS_TRAFICO.map(z => `<option value="${z.id}">${z.nombre}</option>`).join('')}
         </select>
     `);
 
-    // 3. Limpiar contenido central
-    $('#main-content').html('');
+    $('#tabla-container').html('');
 
-    // 4. Escuchar cambios en el select
     $('#select-zona').on('change', function() {
         const zona = $(this).val();
-        if (zona) cargarTablaTrafico(zona);
+        if (zona) {
+            paginaActual = 1;
+            renderTabla(zona);
+        }
     });
 }
 
-//TODO modificar en la fase 2
-
-function cargarTablaTrafico(zona) {
-    paginaActual = 1;
-    const datos = DATOS_TRAFICO[zona] || [];
-    renderTabla(datos);
-}
-
-function renderTabla(datos) {
-    const inicio = (paginaActual - 1) * FILAS_POR_PAGINA;
-    const fin = inicio + FILAS_POR_PAGINA;
-    const filasPagina = datos.slice(inicio, fin);
+function renderTabla(zona) {
+    const datos        = todosLosDatos[zona] || [];
+    const inicio       = (paginaActual - 1) * FILAS_POR_PAGINA;
+    const fin          = inicio + FILAS_POR_PAGINA;
+    const filasPagina  = datos.slice(inicio, fin);
     const totalPaginas = Math.ceil(datos.length / FILAS_POR_PAGINA);
+    const htmlFilas = plantillaTrafico({ filas: filasPagina });
 
-    const filasHTML = filasPagina.map(d => `
-        <tr>
-            <td>${d.punto}</td>
-            <td>${d.intensidad}</td>
-            <td>${d.velocidad} km/h</td>
-            <td>${d.ocupacion}%</td>
-        </tr>
-    `).join('');
-
-    $('#main-content').html(`
-        <h4 class="mb-3">Concentración de tráfico</h4>
-        <table class="table table-striped table-bordered">
+    $('#tabla-container').html(`
+        <table class="table table-striped table-bordered shadow-sm">
             <thead class="table-dark">
                 <tr>
                     <th>Punto</th>
@@ -59,31 +78,28 @@ function renderTabla(datos) {
                     <th>Ocupación</th>
                 </tr>
             </thead>
-            <tbody>${filasHTML}</tbody>
+            <tbody>${htmlFilas}</tbody>
         </table>
-        <div class="d-flex justify-content-between align-items-center">
-            <span>Página ${paginaActual} de ${totalPaginas}</span>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <span class="text-muted">Página ${paginaActual} de ${totalPaginas}</span>
             <div>
-                <button class="btn btn-secondary btn-sm me-2" id="btn-anterior" 
-                    ${paginaActual === 1 ? 'disabled' : ''}>Anterior</button>
-                <button class="btn btn-secondary btn-sm" id="btn-siguiente"
-                    ${paginaActual === totalPaginas ? 'disabled' : ''}>Siguiente</button>
+                <button class="btn btn-secondary btn-sm me-2" id="btn-anterior">Anterior</button>
+                <button class="btn btn-secondary btn-sm" id="btn-siguiente">Siguiente</button>
             </div>
         </div>
     `);
 
-    // Botones paginación
+    // Disabled en botones
+    if (paginaActual === 1) $('#btn-anterior').prop('disabled', true);
+    if (paginaActual === totalPaginas) $('#btn-siguiente').prop('disabled', true);
+
+    // Paginación
     $('#btn-anterior').on('click', function() {
         paginaActual--;
-        renderTabla(datos);
+        renderTabla(zona);
     });
     $('#btn-siguiente').on('click', function() {
         paginaActual++;
-        renderTabla(datos);
+        renderTabla(zona);
     });
 }
-
-// Enganchar al botón del navbar
-$('#nav-trafico').on('click', function() {
-    mostrarSidebarTrafico();
-});
