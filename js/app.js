@@ -29,6 +29,38 @@ $(document).ready(function() {
                 <option value="Valencia">Valencia</option>
                 <option value="Sevilla">Sevilla</option>
             </select>
+
+            <div class="mt-4 p-3 bg-white border rounded shadow-sm">
+                <h6 class="fw-bold mb-2">Disponibilidad de bicicletas</h6>
+                <p class="text-muted small mb-3">
+                    El color del marcador indica cuántas bicis hay disponibles en cada punto.
+                </p>
+
+                <div class="d-flex align-items-center mb-3">
+                    <span style="width:16px; height:16px; border-radius:50%; background-color:red; display:inline-block; border:1px solid #333; margin-right:10px;"></span>
+
+                    <div>
+                        <div class="fw-semibold">Baja disponibilidad</div>
+                        <div class="text-muted small">0 a 3 bicis disponibles</div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3">
+                    <span style="width:16px; height:16px; border-radius:50%; background-color:orange; display:inline-block; border:1px solid #333; margin-right:10px;"></span>
+                    <div>
+                        <div class="fw-semibold">Disponibilidad media</div>
+                        <div class="text-muted small">4 a 7 bicis disponibles</div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <span style="width:16px; height:16px; border-radius:50%; background-color:green; display:inline-block; border:1px solid #333; margin-right:10px;"></span>
+                    <div>
+                        <div class="fw-semibold">Alta disponibilidad</div>
+                        <div class="text-muted small">8 o más bicis disponibles</div>
+                    </div>
+                </div>
+            </div>
         `);
 
         $("#citySelect").on("change", function() {
