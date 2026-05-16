@@ -19,7 +19,7 @@ body {
 
 @media (max-width: 768px) {
   #side-menu {
-    min-height: auto;
+    min-height: calc(100vh - 56px);
   }
 
   #bike-map {

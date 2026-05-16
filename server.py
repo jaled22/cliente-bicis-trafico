@@ -14,10 +14,68 @@ import socket
 import os
 
 import mimetypes
+import json
 
 piePagina = conf.ASIGNATURA + "Universidad Polit&eacute;cnica de Madrid ("+datetime.datetime.now().strftime("%c")+" en "+socket.gethostname()+")"
 
 class MyServer(BaseHTTPRequestHandler):
+
+
+    def do_POST(self):
+        # do_POST gestiona peticiones HTTP POST cuyo cuerpo debe venir en JSON.
+        # Primero registra en el log la ruta solicitada y la IP del cliente.
+        # Después valida que la cabecera Content-Type empiece por
+        # "application/json"; si no, responde con error 415.
+        # A continuación lee el cuerpo usando Content-Length y comprueba que el
+        # contenido sea un JSON válido (UTF-8). Si falla el parseo, responde 400.
+        # Si es válido, usa la ruta pedida (sin '/') para construir el nombre del
+        # fichero destino con extensión .json (si la ruta está vacía usa "index").
+        # Luego guarda el cuerpo recibido en ese fichero en modo binario.
+        # Si hay un problema de escritura, responde 500.
+        # Si todo va bien, devuelve 200 con una respuesta JSON {"status":"ok"}.
+        # Cualquier excepción no controlada termina en error 500 genérico.
+        lg.debug("New POST request: "+self.path+" from: "+self.client_address[0])
+        try:
+            parsed_path = urllib.parse.urlparse(self.path)
+
+            content_type = self.headers.get('Content-Type', '')
+            if not content_type.lower().startswith('application/json'):
+                lg.warning(f"POST rechazado en '{self.path}': Content-Type no válido ({content_type}).")
+                self.send_error(415, "Tipo de contenido no soportado. Se requiere application/json")
+                return
+
+            content_length = int(self.headers.get('Content-Length', 0))
+            cuerpo = self.rfile.read(content_length)
+
+            try:
+                json.loads(cuerpo.decode('utf-8'))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                lg.warning(f"POST rechazado en '{self.path}': JSON inválido.")
+                self.send_error(400, "JSON inválido en el cuerpo de la petición")
+                return
+
+            ruta_recurso = parsed_path.path.lstrip('/')
+            if ruta_recurso == "":
+                ruta_recurso = "index"
+            fichero_destino = ruta_recurso + ".json"
+
+            try:
+                with open(fichero_destino, 'wb') as f:
+                    f.write(cuerpo)
+                lg.debug(f"POST guardado correctamente en '{fichero_destino}' ({len(cuerpo)} bytes).")
+            except OSError:
+                lg.warning(f"No se pudo guardar el fichero '{fichero_destino}'.")
+                self.send_error(500, f"Error interno del servidor '{parsed_path.path}'")
+                return
+
+            respuesta = b'{"status":"ok"}'
+            self.send_headers(200, 'application/json', len(respuesta))
+            self.wfile.write(respuesta)
+
+        except Exception:
+            lg.warning("Se ha producido un error indefinido en POST")
+            self.send_error(500, "Error interno del servidor")
+
 
     def do_GET(self):
 
