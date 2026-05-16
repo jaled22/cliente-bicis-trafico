@@ -20,11 +20,10 @@ function showBikeModal(station){
     <p><strong>Huecos libres:</strong> ${station.empty_slots ?? "No disponible"}</p>
     `;
    
-
     const modal =new bootstrap.Modal(document.getElementById('bikeModal'));
     modal.show();
 }
-
+//Devuelve un color segun el numero de bicis disponibles
 function getMarkerColor(bikes) {
   if (bikes <= 3) return "red";
   if (bikes <= 7) return "orange";
@@ -38,8 +37,11 @@ async function loadBikeCity(cityName) {
     clearBikeMarkers();
 
     try {
+
+        //llama a la funcion que pregunta a CityBikes y devuelve las estaciones reales
         const result = await getStationsByCity(cityName);
 
+        //crea un array con lat y long para saber donde poner el marcador
         const stations = result.stations.filter(station =>
             station.latitude != null && station.longitude != null
         );
@@ -48,7 +50,7 @@ async function loadBikeCity(cityName) {
             alert(`No hay estaciones disponibles para ${cityName}`);
             return;
         }
-
+        //coge la primera estacion y centra el mapa ahi
         const firstStation = stations[0];
         bikeMap.setView([firstStation.latitude, firstStation.longitude], 13);
 
@@ -63,10 +65,11 @@ async function loadBikeCity(cityName) {
                 weight: 2
             }).addTo(bikeMap);
 
+            //click para abrir el modal de las estaciones
             marker.on('click', () => {
                 showBikeModal(station);
             });
-
+            //mete el marcador en el array, para luego poder borrarlo 
             bikeMarkers.push(marker);
         });
 
@@ -92,7 +95,7 @@ document.addEventListener('DOMContentLoaded',() =>{ //Se hace así para que el d
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(bikeMap);
 
-    //testStationsByCity("Madrid");
+   
 
     const citySelect = document.getElementById('citySelect');
 
@@ -110,7 +113,7 @@ document.addEventListener('DOMContentLoaded',() =>{ //Se hace así para que el d
   });
 
 });
-
+//normaliza el texto por si acaso en vez de madrid es Madrid o algo asi 
 function normalizeText(text) {
     return (text || "")
         .toLowerCase()
@@ -120,15 +123,16 @@ function normalizeText(text) {
 
 //busca en CityBikes que red corresponde a una ciudad
 async function getNetworkByCity(cityName) {  
+    //peticion a la API para obtener la lista de redes
     const response = await fetch("https://api.citybik.es/v2/networks");
 
     if (!response.ok) {
         throw new Error("No se pudo obtener la lista de redes");
     }
-
+    //convierte el JSON recibido en un objeto JS
     const data = await response.json();
     const wantedCity = normalizeText(cityName);
-
+    //Busca una red que coincida con la ciudad elegida
     const network = data.networks.find(n => {
         const apiCity = normalizeText(n.location?.city);
         return apiCity.includes(wantedCity) || wantedCity.includes(apiCity);
@@ -160,18 +164,6 @@ async function getStationsByCity(cityName) {
     };
 }
 
-//Funcion de prueba para ver en consola las estaciones reales
-async function testStationsByCity(cityName) {
-    try {
-        const result = await getStationsByCity(cityName);
-        console.log(`Resultado completo para ${cityName}:`, result);
-        console.log(`Nombre de la red:`, result.networkName);
-        console.log(`Localización:`, result.location);
-        console.log(`Estaciones:`, result.stations);
-        console.log(`Número de estaciones:`, result.stations.length);
-    } catch (error) {
-        console.error(`Error obteniendo estaciones de ${cityName}:`, error);
-    }
-}
+
 
 
