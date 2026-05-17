@@ -29,12 +29,61 @@ $(document).ready(function() {
                 <option value="Valencia">Valencia</option>
                 <option value="Sevilla">Sevilla</option>
             </select>
+
+            <div class="mt-4 p-3 bg-white border rounded shadow-sm">
+                <h6 class="fw-bold mb-2">Disponibilidad de bicicletas</h6>
+                <p class="text-muted small mb-3">
+                    El color del marcador indica cuántas bicis hay disponibles en cada punto.
+                </p>
+
+                <div class="d-flex align-items-center mb-3">
+                    <span style="width:16px; height:16px; border-radius:50%; background-color:red; display:inline-block; border:1px solid #333; margin-right:10px;"></span>
+
+                    <div>
+                        <div class="fw-semibold">Baja disponibilidad</div>
+                        <div class="text-muted small">0 a 3 bicis disponibles</div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3">
+                    <span style="width:16px; height:16px; border-radius:50%; background-color:orange; display:inline-block; border:1px solid #333; margin-right:10px;"></span>
+                    <div>
+                        <div class="fw-semibold">Disponibilidad media</div>
+                        <div class="text-muted small">4 a 7 bicis disponibles</div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <span style="width:16px; height:16px; border-radius:50%; background-color:green; display:inline-block; border:1px solid #333; margin-right:10px;"></span>
+                    <div>
+                        <div class="fw-semibold">Alta disponibilidad</div>
+                        <div class="text-muted small">8 o más bicis disponibles</div>
+                    </div>
+                </div>
+            </div>
         `);
 
         $("#citySelect").on("change", function() {
             const city = $(this).val();
-            if (city && typeof loadBikeCity === "function") {
-                loadBikeCity(city);
+            if (city) {
+                // 1. Ejecuta la lógica visual del mapa de Beatriz
+                if (typeof loadBikeCity === "function") {
+                    loadBikeCity(city);
+                }
+
+                // 2. ENTRADA DE DATOS ASÍNCRONA (Tu tarea de AJAX de la Fase II)
+                $.ajax({
+                    url: '/visitas', // Ruta POST configurada en tu server.py
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ ciudad: city }), // Mandamos los datos en JSON plano
+                    success: function(response) {
+                        console.log("¡Éxito! Servidor notificado de la visita a: " + city);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error al conectar con el backend:", error);
+                    }
+                });
             }
          });
 
@@ -52,23 +101,9 @@ $(document).ready(function() {
         }
     });
 
-    // Tráfico (Jaled)
     $("#nav-trafico").on("click", function() {
-        hideAllViews();
-        $("#sidebar").removeClass("d-none");
-
-        // Meter lo de Jaled aqui 
-        $("#sidebar-content").html(`
-            <h5>Tráfico</h5>
-            <label class="form-label mt-3">Selecciona una zona</label>
-            <select id="trafficZoneSelect" class="form-select">
-                <option value="centro">Madrid Centro</option>
-                <option value="m30">M-30</option>
-            </select>
-            <button class="btn btn-success mt-3 w-100">Ver tráfico</button>
-        `);
-
-        $("#traffic-view").removeClass("d-none");
-    });
+    hideAllViews();
+    mostrarSidebarTrafico();
+});
 
 });
